@@ -1,9 +1,17 @@
 package com.mohammad.githubrepos.presentation.main
 
 class MainContract {
-    interface View
+    interface View {
+        fun initLayout()
+        fun showTrending()
+        fun showSettings()
+    }
 
-    interface Presentor
+    interface Presentor {
+        fun onCreate()
+        fun trendingClick()
+        fun settingsClick()
+    }
 
     interface Interactor
 }
