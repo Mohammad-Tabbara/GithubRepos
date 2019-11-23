@@ -6,3 +6,5 @@ A Coding Challenge from MaticServices
 
 - Dagger 2: Dependency Injector forked by google
 - Timber: Logger to log data to the terminal
+- Retrofit: Network Calls
+- RxAndroid: Reactive FrameWork
