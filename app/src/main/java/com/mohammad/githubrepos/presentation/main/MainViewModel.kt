@@ -21,11 +21,11 @@ class MainViewModel @Inject constructor(): ViewModel() {
     fun settingsClicked() {
         bottomBarNavigation.sendAction(1)
     }
-}
 
-class NavLiveData: LiveData<Int>(){
-    @MainThread
-    fun sendAction(data: Int) {
-        value = data
+    class NavLiveData: LiveData<Int>(){
+        @MainThread
+        fun sendAction(data: Int) {
+            value = data
+        }
     }
 }
