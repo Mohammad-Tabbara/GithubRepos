@@ -44,17 +44,13 @@ class TrendingFragment : BaseFragment(), TrendingContract.View, GitReposAdapter.
 
     }
 
-    override fun initLayout() {
-        retryButton.setOnClickListener {
-            presenter.retryClicked()
-        }
-    }
-
-    override fun bindData(repos: MutableList<Repo>) {
+    override fun initLayout(repos: MutableList<Repo>) {
         adapter = GitReposAdapter(repos,this)
         trendingRepositories.adapter = adapter
         trendingRepositories.layoutManager = LinearLayoutManager(context)
-
+        retryButton.setOnClickListener {
+            presenter.retryClicked()
+        }
     }
 
     override fun upDateData() {

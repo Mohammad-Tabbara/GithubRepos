@@ -14,7 +14,7 @@ class TrendingPresenterImp(val view: TrendingContract.View, val interactor: Tren
     val repos : MutableList<Repo> = mutableListOf()
 
     override fun onViewCreated() {
-        view.initLayout()
+        view.initLayout(repos)
         initSince()
         fetchTrending()
     }
@@ -54,7 +54,7 @@ class TrendingPresenterImp(val view: TrendingContract.View, val interactor: Tren
                 pageSize = repoWrapper.repos.size
                 repos.addAll(repoWrapper.repos)
                 view.showData()
-                view.bindData(repos)
+                view.upDateData()
             }
 
             override fun onError(e: Throwable) {
