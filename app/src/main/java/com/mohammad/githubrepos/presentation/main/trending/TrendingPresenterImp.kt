@@ -14,23 +14,9 @@ class TrendingPresenterImp(val view: TrendingContract.View, val interactor: Tren
     val repos : MutableList<Repo> = mutableListOf()
 
     override fun onViewCreated() {
-        val c = Calendar.getInstance()
-        c.add(Calendar.DAY_OF_YEAR,-30)
-        val date = c.time
-        val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        since = "created:>" + dateTimeFormatter.format(date)
-        interactor.getTrendingRepositories(since,1,object : ApiListener<RepoWrapper>(){
-            override fun onSuccess(repoWrapper: RepoWrapper) {
-                pageSize = repoWrapper.repos.size
-                repos.addAll(repoWrapper.repos)
-                view.bindData(repos)
-            }
-
-            override fun onError(e: Throwable) {
-                logger.e(e)
-            }
-
-        })
+        view.initLayout()
+        initSince()
+        fetchTrending()
     }
 
     override fun loadMore(offset: Int) {
@@ -43,6 +29,36 @@ class TrendingPresenterImp(val view: TrendingContract.View, val interactor: Tren
 
             override fun onError(e: Throwable) {
                 view.loadMoreFailed()
+                logger.e(e)
+            }
+
+        })
+    }
+
+    override fun retryClicked() {
+        fetchTrending()
+    }
+
+    private fun initSince(){
+        val c = Calendar.getInstance()
+        c.add(Calendar.DAY_OF_YEAR,-30)
+        val date = c.time
+        val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        since = "created:>" + dateTimeFormatter.format(date)
+    }
+
+    private fun fetchTrending(){
+        view.showLoading()
+        interactor.getTrendingRepositories(since,1,object : ApiListener<RepoWrapper>(){
+            override fun onSuccess(repoWrapper: RepoWrapper) {
+                pageSize = repoWrapper.repos.size
+                repos.addAll(repoWrapper.repos)
+                view.showData()
+                view.bindData(repos)
+            }
+
+            override fun onError(e: Throwable) {
+                view.showNoNetwork()
                 logger.e(e)
             }
 

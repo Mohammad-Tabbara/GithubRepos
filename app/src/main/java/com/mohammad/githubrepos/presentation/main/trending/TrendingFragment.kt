@@ -13,6 +13,7 @@ import com.mohammad.githubrepos.R
 import com.mohammad.githubrepos.framework.api.models.Repo
 import com.mohammad.githubrepos.presentation._common.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_trending.*
+import kotlinx.android.synthetic.main.no_network_connection.*
 import javax.inject.Inject
 
 /**
@@ -43,6 +44,12 @@ class TrendingFragment : BaseFragment(), TrendingContract.View, GitReposAdapter.
 
     }
 
+    override fun initLayout() {
+        retryButton.setOnClickListener {
+            presenter.retryClicked()
+        }
+    }
+
     override fun bindData(repos: MutableList<Repo>) {
         adapter = GitReposAdapter(repos,this)
         trendingRepositories.adapter = adapter
@@ -56,6 +63,24 @@ class TrendingFragment : BaseFragment(), TrendingContract.View, GitReposAdapter.
 
     override fun loadMoreFailed() {
         adapter?.loadMoreFailed()
+    }
+
+    override fun showLoading() {
+        trendingProgressbar.visibility = View.VISIBLE
+        trendingRepositories.visibility = View.GONE
+        noNetwork.visibility = View.GONE
+    }
+
+    override fun showData() {
+        trendingProgressbar.visibility = View.GONE
+        trendingRepositories.visibility = View.VISIBLE
+        noNetwork.visibility = View.GONE
+    }
+
+    override fun showNoNetwork() {
+        trendingProgressbar.visibility = View.GONE
+        trendingRepositories.visibility = View.GONE
+        noNetwork.visibility = View.VISIBLE
     }
 
     override fun loadMore(offset: Int) {
