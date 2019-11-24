@@ -44,7 +44,8 @@ class TrendingFragment : BaseFragment(), TrendingContract.View, GitReposAdapter.
 
     }
 
-    override fun initLayout(repos: MutableList<Repo>) {
+    override fun initLayout(repos: MutableList<Repo>, trendingSpan: Int) {
+        activity?.title = String.format(getString(R.string.trending_title),trendingSpan)
         adapter = GitReposAdapter(repos,this)
         trendingRepositories.adapter = adapter
         trendingRepositories.layoutManager = LinearLayoutManager(context)

@@ -37,6 +37,8 @@ class SettingsFragment : BaseFragment(), SettingsContract.View {
     }
 
     override fun initLayout(trendingSpan: Int) {
+        activity?.title = getString(R.string.settings)
+
         val list = listOf(3,7,14,30)
         var arrayAdapter : ArrayAdapter<Int>? = null
         context?.let {

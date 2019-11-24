@@ -39,14 +39,12 @@ class MainActivity : BaseActivity(), MainContract.View {
     }
 
     override fun showTrending() {
-        supportActionBar?.title = resources.getString(R.string.trending)
         supportFragmentManager.inTransaction {
             add(R.id.container, TrendingFragment.newInstance())
         }
     }
 
     override fun showSettings() {
-        supportActionBar?.title = resources.getString(R.string.settings)
         supportFragmentManager.inTransaction {
             add(R.id.container, SettingsFragment.newInstance())
         }

@@ -8,4 +8,8 @@ class TrendingInteractor(val contentManager: IContentManager): TrendingContract.
     override fun getTrendingRepositories(since: String, page: Int, apiListener: ApiListener<RepoWrapper>) {
         contentManager.getTrendingRepositories(since,page,apiListener)
     }
+
+    override fun getTrendingSpan(): Int {
+        return contentManager.getTrendingSpan()
+    }
 }
