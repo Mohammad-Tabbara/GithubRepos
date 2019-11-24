@@ -6,7 +6,7 @@ import com.mohammad.githubrepos.presentation._common.rxjava.ApiListener
 
 class TrendingContract {
     interface View {
-        fun initLayout(repos: MutableList<Repo>)
+        fun initLayout(repos: MutableList<Repo>, trendingSpan: Int)
         fun upDateData()
         fun loadMoreFailed()
         fun showLoading()
@@ -22,5 +22,6 @@ class TrendingContract {
 
     interface Interactor {
         fun getTrendingRepositories(since: String, page: Int, apiListener: ApiListener<RepoWrapper>)
+        fun getTrendingSpan(): Int
     }
 }

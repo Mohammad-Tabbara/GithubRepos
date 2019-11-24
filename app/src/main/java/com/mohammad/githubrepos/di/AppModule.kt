@@ -1,10 +1,13 @@
 package com.mohammad.githubrepos.di
 
+import android.content.Context
 import com.mohammad.githubrepos.presentation.Constants
 import com.mohammad.githubrepos.domain.IContentManager
 import com.mohammad.githubrepos.domain.ILogger
+import com.mohammad.githubrepos.domain.Iprefs
 import com.mohammad.githubrepos.framework.ContentManager
 import com.mohammad.githubrepos.framework.Logger
+import com.mohammad.githubrepos.framework.Prefs
 import com.mohammad.githubrepos.framework.api.GithubService
 import dagger.Module
 import dagger.Provides
@@ -27,9 +30,13 @@ class AppModule {
             .build().create(GithubService::class.java)
     }
 
+    @Reusable
+    @Provides
+    fun providePrefs(context: Context): Iprefs = Prefs(context)
+
     @Singleton
     @Provides
-    fun provideContentManager(githubService: GithubService): IContentManager = ContentManager(githubService)
+    fun provideContentManager(githubService: GithubService,prefs: Iprefs): IContentManager = ContentManager(githubService,prefs)
 
     @Singleton
     @Provides

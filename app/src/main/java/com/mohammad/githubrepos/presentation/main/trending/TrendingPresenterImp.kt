@@ -14,7 +14,7 @@ class TrendingPresenterImp(val view: TrendingContract.View, val interactor: Tren
     val repos : MutableList<Repo> = mutableListOf()
 
     override fun onViewCreated() {
-        view.initLayout(repos)
+        view.initLayout(repos, interactor.getTrendingSpan())
         initSince()
         fetchTrending()
     }
@@ -41,7 +41,7 @@ class TrendingPresenterImp(val view: TrendingContract.View, val interactor: Tren
 
     private fun initSince(){
         val c = Calendar.getInstance()
-        c.add(Calendar.DAY_OF_YEAR,-30)
+        c.add(Calendar.DAY_OF_YEAR,-interactor.getTrendingSpan())
         val date = c.time
         val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         since = "created:>" + dateTimeFormatter.format(date)
