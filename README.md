@@ -8,3 +8,4 @@ A Coding Challenge from MaticServices
 - Timber: Logger to log data to the terminal
 - Retrofit: Network Calls
 - RxAndroid: Reactive FrameWork
+- Picasso: Image Caching Library
