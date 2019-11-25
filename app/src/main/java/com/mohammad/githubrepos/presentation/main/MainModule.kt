@@ -19,11 +19,6 @@ abstract class MainModule {
         @ActivityScope
         @Provides
         @JvmStatic
-        fun providePresenter(view: MainContract.View, interactor: MainContract.Interactor, logger: ILogger):MainContract.Presentor = MainPresenterImp(view, interactor, logger)
-
-        @ActivityScope
-        @Provides
-        @JvmStatic
-        fun provideInteractor(contentManager: IContentManager):MainContract.Interactor = MainInteractor(contentManager)
+        fun providePresenter(view: MainContract.View, logger: ILogger):MainContract.Presentor = MainPresenterImp(view, logger)
     }
 }
