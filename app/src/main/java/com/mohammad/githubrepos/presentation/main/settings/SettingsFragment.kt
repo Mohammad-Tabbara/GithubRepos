@@ -49,8 +49,6 @@ class SettingsFragment : BaseFragment() {
 
     private fun initLayout() {
         activity?.title = getString(R.string.settings)
-
-
         context?.let {
             arrayAdapter = ArrayAdapter(it, android.R.layout.simple_spinner_item, list)
         }
@@ -61,18 +59,22 @@ class SettingsFragment : BaseFragment() {
 
     private fun initObservers(){
         viewModel.spinnerLiveData.observe(this, Observer { trendingSpan ->
-            val selection = arrayAdapter?.getPosition(trendingSpan).let { if( it == -1) list.size -1 else it }?: list.size -1
-            trendingSpanSpinner.setSelection(selection)
-            trendingSpanSpinner.onItemSelectedListener = object :AdapterView.OnItemSelectedListener{
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    val selectedItem = parent!!.getItemAtPosition(position).toString().toInt()
-                    viewModel.onTrendingSpanItemSelected(selectedItem)
-                }
-
-            }
+            initSpinner(trendingSpan)
         })
+    }
+
+    private fun initSpinner(trendingSpan: Int){
+        val selection = arrayAdapter?.getPosition(trendingSpan).let { if( it == -1) list.size -1 else it }?: list.size -1
+        trendingSpanSpinner.setSelection(selection)
+        trendingSpanSpinner.onItemSelectedListener = object :AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedItem = parent!!.getItemAtPosition(position).toString().toInt()
+                viewModel.onTrendingSpanItemSelected(selectedItem)
+            }
+
+        }
     }
 
 }

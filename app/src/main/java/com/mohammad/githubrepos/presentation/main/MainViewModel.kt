@@ -7,19 +7,22 @@ import javax.inject.Inject
 
 class MainViewModel @Inject constructor(): ViewModel() {
 
+    enum class BottomNavigation{
+        Trending, Settings
+    }
 
     val bottomBarNavigation = NavLiveData()
 
     fun onCreate() {
-        bottomBarNavigation.sendAction(0)
+        bottomBarNavigation.sendAction(BottomNavigation.Trending.ordinal)
     }
 
     fun trendingClicked() {
-        bottomBarNavigation.sendAction(0)
+        bottomBarNavigation.sendAction(BottomNavigation.Trending.ordinal)
     }
 
     fun settingsClicked() {
-        bottomBarNavigation.sendAction(1)
+        bottomBarNavigation.sendAction(BottomNavigation.Settings.ordinal)
     }
 
     class NavLiveData: LiveData<Int>(){
