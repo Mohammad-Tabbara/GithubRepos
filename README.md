@@ -1,4 +1,4 @@
-# GithubRepos
+# GithubRepos (MVVM)
 
 A Coding Challenge from MaticServices
 
