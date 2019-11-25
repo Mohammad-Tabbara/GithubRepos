@@ -44,6 +44,11 @@ class TrendingFragment : BaseFragment(), TrendingContract.View, GitReposAdapter.
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
+    }
+
     override fun initLayout(repos: MutableList<Repo>, trendingSpan: Int) {
         activity?.title = String.format(getString(R.string.trending_title),trendingSpan)
         adapter = GitReposAdapter(repos,this)
