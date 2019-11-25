@@ -1,6 +1,7 @@
 package com.mohammad.githubrepos.presentation.main.settings
 
 import androidx.lifecycle.ViewModel
+import com.mohammad.githubrepos.di.annotations.FragmentScope
 import com.mohammad.githubrepos.di.annotations.ViewModelKey
 import com.mohammad.githubrepos.domain.IContentManager
 import com.mohammad.githubrepos.domain.ILogger
@@ -16,12 +17,14 @@ abstract class SettingsModule {
     @Module
     companion object{
 
+        @FragmentScope
         @Provides
         @IntoMap
         @ViewModelKey(SettingsViewModel::class)
         @JvmStatic
         fun bindSettingsViewModel(interactor: SettingsContract.Interactor): ViewModel = SettingsViewModel(interactor)
 
+        @FragmentScope
         @Provides
         @JvmStatic
         fun provideInteractor(contentManager: IContentManager):SettingsContract.Interactor = SettingsInteractor(contentManager)
