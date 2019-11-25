@@ -9,3 +9,4 @@ A Coding Challenge from MaticServices
 - Retrofit: Network Calls
 - RxAndroid: Reactive FrameWork
 - Picasso: Image Caching Library
+- Robolectric: Unit Testing stuff that depends on android specific components
