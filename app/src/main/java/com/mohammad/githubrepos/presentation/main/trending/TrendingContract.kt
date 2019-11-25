@@ -18,6 +18,7 @@ class TrendingContract {
         fun onViewCreated()
         fun loadMore(offset: Int)
         fun retryClicked()
+        fun onDestroy()
     }
 
     interface Interactor {

@@ -26,11 +26,11 @@ class MainActivity : BaseActivity(), MainContract.View {
         navigation.setOnNavigationItemSelectedListener { menuItem ->
             when(menuItem.itemId){
                 R.id.trending -> {
-                    presenter.trendingClick()
+                    presenter.trendingClicked()
                     true
                 }
                 R.id.settings -> {
-                    presenter.settingsClick()
+                    presenter.settingsClicked()
                     true
                 }
                 else -> false
