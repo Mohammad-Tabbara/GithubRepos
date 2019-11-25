@@ -1,6 +1,7 @@
 package com.mohammad.githubrepos.presentation.main.trending
 
 import androidx.lifecycle.ViewModel
+import com.mohammad.githubrepos.di.annotations.FragmentScope
 import com.mohammad.githubrepos.di.annotations.ViewModelKey
 import com.mohammad.githubrepos.domain.IContentManager
 import com.mohammad.githubrepos.domain.ILogger
@@ -14,12 +15,14 @@ abstract class TrendingModule {
 
     @Module
     companion object{
+        @FragmentScope
         @Provides
         @IntoMap
         @ViewModelKey(TrendingViewModel::class)
         @JvmStatic
         fun provideViewModel(interactor: TrendingContract.Interactor, logger: ILogger): ViewModel = TrendingViewModel(interactor, logger)
 
+        @FragmentScope
         @Provides
         @JvmStatic
         fun provideInteractor(contentManager: IContentManager):TrendingContract.Interactor = TrendingInteractor(contentManager)
