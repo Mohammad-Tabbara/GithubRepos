@@ -4,6 +4,7 @@ import com.mohammad.githubrepos.domain.ILogger
 import com.mohammad.githubrepos.framework.api.models.Repo
 import com.mohammad.githubrepos.framework.api.models.RepoWrapper
 import com.mohammad.githubrepos.presentation._common.rxjava.ApiListener
+import io.reactivex.disposables.CompositeDisposable
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -13,6 +14,8 @@ class TrendingPresenterImp(val view: TrendingContract.View, val interactor: Tren
     private var since: String = "created:>2017-10-22"
     val repos : MutableList<Repo> = mutableListOf()
 
+    val compositeDisposable = CompositeDisposable()
+
     override fun onViewCreated() {
         view.initLayout(repos, interactor.getTrendingSpan())
         initSince()
@@ -21,7 +24,7 @@ class TrendingPresenterImp(val view: TrendingContract.View, val interactor: Tren
 
     override fun loadMore(offset: Int) {
         val pageNumber = offset/pageSize + 1
-        interactor.getTrendingRepositories(since,pageNumber,object : ApiListener<RepoWrapper>(){
+        val loadMore = object : ApiListener<RepoWrapper>() {
             override fun onSuccess(repoWrapper: RepoWrapper) {
                 repos.addAll(repoWrapper.repos)
                 view.upDateData()
@@ -32,11 +35,17 @@ class TrendingPresenterImp(val view: TrendingContract.View, val interactor: Tren
                 logger.e(e)
             }
 
-        })
+        }
+        compositeDisposable.add(loadMore)
+        interactor.getTrendingRepositories(since,pageNumber,loadMore)
     }
 
     override fun retryClicked() {
         fetchTrending()
+    }
+
+    override fun onDestroy() {
+        compositeDisposable.clear()
     }
 
     private fun initSince(){
@@ -49,7 +58,7 @@ class TrendingPresenterImp(val view: TrendingContract.View, val interactor: Tren
 
     private fun fetchTrending(){
         view.showLoading()
-        interactor.getTrendingRepositories(since,1,object : ApiListener<RepoWrapper>(){
+        val fetchTrending = object : ApiListener<RepoWrapper>() {
             override fun onSuccess(repoWrapper: RepoWrapper) {
                 pageSize = repoWrapper.repos.size
                 repos.addAll(repoWrapper.repos)
@@ -62,6 +71,8 @@ class TrendingPresenterImp(val view: TrendingContract.View, val interactor: Tren
                 logger.e(e)
             }
 
-        })
+        }
+        compositeDisposable.add(fetchTrending)
+        interactor.getTrendingRepositories(since,1,fetchTrending)
     }
 }

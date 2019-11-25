@@ -9,9 +9,7 @@ class MainContract {
 
     interface Presentor {
         fun onCreate()
-        fun trendingClick()
-        fun settingsClick()
+        fun trendingClicked()
+        fun settingsClicked()
     }
-
-    interface Interactor
 }
