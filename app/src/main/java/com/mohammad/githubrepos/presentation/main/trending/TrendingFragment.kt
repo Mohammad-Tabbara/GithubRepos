@@ -1,15 +1,17 @@
 package com.mohammad.githubrepos.presentation.main.trending
 
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.mohammad.githubrepos.R
+import com.mohammad.githubrepos.di.factory.DaggerViewModelFactory
 import com.mohammad.githubrepos.framework.api.models.Repo
 import com.mohammad.githubrepos.presentation._common.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_trending.*
@@ -19,7 +21,7 @@ import javax.inject.Inject
 /**
  * A simple [Fragment] subclass.
  */
-class TrendingFragment : BaseFragment(), TrendingContract.View, GitReposAdapter.GitReposAdapterListener {
+class TrendingFragment : BaseFragment(), GitReposAdapter.GitReposAdapterListener {
 
     companion object{
         fun newInstance():TrendingFragment = TrendingFragment()
@@ -28,7 +30,9 @@ class TrendingFragment : BaseFragment(), TrendingContract.View, GitReposAdapter.
     var adapter: GitReposAdapter? = null
 
     @Inject
-    lateinit var presenter: TrendingContract.Presentor
+    lateinit var viewModelFactory: DaggerViewModelFactory
+
+    lateinit var viewModel: TrendingViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,48 +44,76 @@ class TrendingFragment : BaseFragment(), TrendingContract.View, GitReposAdapter.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.onViewCreated()
-
+        viewModel = ViewModelProviders.of(this,viewModelFactory).get(TrendingViewModel::class.java)
+        viewModel.onViewCreated()
+        initObservers()
     }
 
-    override fun initLayout(repos: MutableList<Repo>, trendingSpan: Int) {
+    fun initObservers(){
+        viewModel.init.observe(this, Observer {trendingSpan ->
+            initLayout(trendingSpan)
+        })
+        viewModel.dataStates.observe(this, Observer { ordinal ->
+            when(TrendingViewModel.FetchData.values()[ordinal]){
+                TrendingViewModel.FetchData.Load -> {
+                    showLoading()
+                }
+                TrendingViewModel.FetchData.Success -> {
+                    showData()
+                }
+                TrendingViewModel.FetchData.Fail -> {
+                    showNoNetwork()
+                }
+                TrendingViewModel.FetchData.FailLoadMore -> {
+                    loadMoreFailed()
+                }
+            }
+        })
+        viewModel.repos.observe(this, Observer {repos ->
+            loadData(repos)
+        })
+    }
+
+    private fun initLayout(trendingSpan: Int) {
         activity?.title = String.format(getString(R.string.trending_title),trendingSpan)
-        adapter = GitReposAdapter(repos,this)
-        trendingRepositories.adapter = adapter
-        trendingRepositories.layoutManager = LinearLayoutManager(context)
         retryButton.setOnClickListener {
-            presenter.retryClicked()
+            viewModel.retryClicked()
         }
     }
 
-    override fun upDateData() {
-        adapter?.updateData()
-    }
-
-    override fun loadMoreFailed() {
-        adapter?.loadMoreFailed()
-    }
-
-    override fun showLoading() {
+    private fun showLoading(){
         trendingProgressbar.visibility = View.VISIBLE
         trendingRepositories.visibility = View.GONE
         noNetwork.visibility = View.GONE
     }
 
-    override fun showData() {
+    private fun showData(){
         trendingProgressbar.visibility = View.GONE
         trendingRepositories.visibility = View.VISIBLE
         noNetwork.visibility = View.GONE
     }
 
-    override fun showNoNetwork() {
+    private fun showNoNetwork(){
         trendingProgressbar.visibility = View.GONE
         trendingRepositories.visibility = View.GONE
         noNetwork.visibility = View.VISIBLE
     }
 
+    private fun loadMoreFailed(){
+        adapter?.loadMoreFailed()
+    }
+
+    private fun loadData(repos: MutableList<Repo>) {
+        adapter?.updateData()?: run {
+            adapter = GitReposAdapter(repos,this)
+            trendingRepositories.adapter = adapter
+            trendingRepositories.layoutManager = LinearLayoutManager(context)
+        }
+    }
+
+
     override fun loadMore(offset: Int) {
-        presenter.loadMore(offset)
+        viewModel.loadMore(offset)
     }
 
 

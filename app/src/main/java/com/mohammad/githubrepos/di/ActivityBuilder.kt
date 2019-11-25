@@ -8,6 +8,6 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class ActivityBuilder{
 
-    @ContributesAndroidInjector(modules = [MainModule::class, FragmentBuilder::class])
+    @ContributesAndroidInjector(modules = [MainModule::class, ViewModelFactoryModule::class, FragmentBuilder::class])
     abstract fun bindMainActivity(): MainActivity
 }
