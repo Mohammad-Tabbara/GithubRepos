@@ -28,24 +28,21 @@ class MainActivity : BaseActivity() {
         initLayout()
     }
 
-    fun initObservers(){
-        viewModel.bottomBarNavigation.observe(this, Observer { index ->
-            when(index){
-                0 -> {
-                    supportFragmentManager.inTransaction {
-                        add(R.id.container, TrendingFragment.newInstance())
-                    }
+    private fun initObservers(){
+        viewModel.bottomBarNavigation.observe(this, Observer { ordinal ->
+
+            when(MainViewModel.BottomNavigation.values()[ordinal]){
+                MainViewModel.BottomNavigation.Trending -> {
+                    showTrending()
                 }
-                1 -> {
-                    supportFragmentManager.inTransaction {
-                        add(R.id.container, SettingsFragment.newInstance())
-                    }
+                MainViewModel.BottomNavigation.Settings -> {
+                    showSettings()
                 }
             }
         })
     }
 
-    fun initLayout() {
+    private fun initLayout() {
         setSupportActionBar(toolbar)
 
         navigation.setOnNavigationItemSelectedListener { menuItem ->
@@ -60,6 +57,18 @@ class MainActivity : BaseActivity() {
                 }
                 else -> false
             }
+        }
+    }
+
+    private fun showTrending(){
+        supportFragmentManager.inTransaction {
+            add(R.id.container, TrendingFragment.newInstance())
+        }
+    }
+
+    private fun showSettings(){
+        supportFragmentManager.inTransaction {
+            add(R.id.container, SettingsFragment.newInstance())
         }
     }
 }

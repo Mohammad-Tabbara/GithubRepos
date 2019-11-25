@@ -7,6 +7,7 @@ import com.mohammad.githubrepos.domain.ILogger
 import com.mohammad.githubrepos.framework.api.models.Repo
 import com.mohammad.githubrepos.framework.api.models.RepoWrapper
 import com.mohammad.githubrepos.presentation._common.rxjava.ApiListener
+import io.reactivex.disposables.CompositeDisposable
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -24,6 +25,8 @@ class TrendingViewModel @Inject constructor(private val interactor: TrendingCont
     val dataStates = DataStatesLiveData()
     val repos  = ReposLiveData()
 
+    val compositeDisposable = CompositeDisposable()
+
     fun onViewCreated() {
         init.sendAction(interactor.getTrendingSpan())
         repos.sendAction(mutableListOf())
@@ -33,7 +36,7 @@ class TrendingViewModel @Inject constructor(private val interactor: TrendingCont
 
     fun loadMore(offset: Int) {
         val pageNumber = offset/pageSize + 1
-        interactor.getTrendingRepositories(since,pageNumber,object : ApiListener<RepoWrapper>(){
+        val loadMore = object : ApiListener<RepoWrapper>() {
             override fun onSuccess(repoWrapper: RepoWrapper) {
                 repos.sendAction(repoWrapper.repos)
                 dataStates.sendAction(FetchData.Success.ordinal)
@@ -44,7 +47,9 @@ class TrendingViewModel @Inject constructor(private val interactor: TrendingCont
                 logger.e(e)
             }
 
-        })
+        }
+        compositeDisposable.add(loadMore)
+        interactor.getTrendingRepositories(since,pageNumber,loadMore)
     }
 
     fun retryClicked() {
@@ -61,7 +66,7 @@ class TrendingViewModel @Inject constructor(private val interactor: TrendingCont
 
     private fun fetchTrending(){
         dataStates.sendAction(FetchData.Load.ordinal)
-        interactor.getTrendingRepositories(since,1,object : ApiListener<RepoWrapper>(){
+        val fetchTrending = object : ApiListener<RepoWrapper>(){
             override fun onSuccess(repoWrapper: RepoWrapper) {
                 pageSize = repoWrapper.repos.size
                 repos.sendAction(repoWrapper.repos)
@@ -74,7 +79,14 @@ class TrendingViewModel @Inject constructor(private val interactor: TrendingCont
                 logger.e(e)
             }
 
-        })
+        }
+        compositeDisposable.add(fetchTrending)
+        interactor.getTrendingRepositories(since,1,fetchTrending)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.clear()
     }
 
     class InitLiveData: LiveData<Int>(){
