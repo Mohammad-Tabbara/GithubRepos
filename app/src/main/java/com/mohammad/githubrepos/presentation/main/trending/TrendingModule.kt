@@ -7,23 +7,22 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 
-@Module
+@Module(includes = [TrendingProviders::class])
 abstract class TrendingModule {
 
     @FragmentScope
     @Binds
     abstract fun bindView(fragment: TrendingFragment):TrendingContract.View
 
-    @Module
-    companion object{
-        @FragmentScope
-        @Provides
-        @JvmStatic
-        fun providePresenter(view: TrendingContract.View, interactor: TrendingContract.Interactor, logger: ILogger):TrendingContract.Presentor = TrendingPresenterImp(view, interactor, logger)
+}
 
-        @FragmentScope
-        @Provides
-        @JvmStatic
-        fun provideInteractor(contentManager: IContentManager):TrendingContract.Interactor = TrendingInteractor(contentManager)
-    }
+@Module
+object TrendingProviders{
+    @FragmentScope
+    @Provides
+    fun providePresenter(view: TrendingContract.View, interactor: TrendingContract.Interactor, logger: ILogger):TrendingContract.Presentor = TrendingPresenterImp(view, interactor, logger)
+
+    @FragmentScope
+    @Provides
+    fun provideInteractor(contentManager: IContentManager):TrendingContract.Interactor = TrendingInteractor(contentManager)
 }
