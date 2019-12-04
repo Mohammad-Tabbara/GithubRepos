@@ -12,21 +12,15 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class SettingsModule {
+class SettingsModule {
 
-    @Module
-    companion object{
+    @FragmentScope
+    @Provides
+    @IntoMap
+    @ViewModelKey(SettingsViewModel::class)
+    fun bindSettingsViewModel(interactor: SettingsContract.Interactor): ViewModel = SettingsViewModel(interactor)
 
-        @FragmentScope
-        @Provides
-        @IntoMap
-        @ViewModelKey(SettingsViewModel::class)
-        @JvmStatic
-        fun bindSettingsViewModel(interactor: SettingsContract.Interactor): ViewModel = SettingsViewModel(interactor)
-
-        @FragmentScope
-        @Provides
-        @JvmStatic
-        fun provideInteractor(contentManager: IContentManager):SettingsContract.Interactor = SettingsInteractor(contentManager)
-    }
+    @FragmentScope
+    @Provides
+    fun provideInteractor(contentManager: IContentManager):SettingsContract.Interactor = SettingsInteractor(contentManager)
 }

@@ -11,20 +11,15 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class TrendingModule {
+class TrendingModule {
 
-    @Module
-    companion object{
-        @FragmentScope
-        @Provides
-        @IntoMap
-        @ViewModelKey(TrendingViewModel::class)
-        @JvmStatic
-        fun provideViewModel(interactor: TrendingContract.Interactor, logger: ILogger): ViewModel = TrendingViewModel(interactor, logger)
+    @FragmentScope
+    @Provides
+    @IntoMap
+    @ViewModelKey(TrendingViewModel::class)
+    fun provideViewModel(interactor: TrendingContract.Interactor, logger: ILogger): ViewModel = TrendingViewModel(interactor, logger)
 
-        @FragmentScope
-        @Provides
-        @JvmStatic
-        fun provideInteractor(contentManager: IContentManager):TrendingContract.Interactor = TrendingInteractor(contentManager)
-    }
+    @FragmentScope
+    @Provides
+    fun provideInteractor(contentManager: IContentManager):TrendingContract.Interactor = TrendingInteractor(contentManager)
 }
